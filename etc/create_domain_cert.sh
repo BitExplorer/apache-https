@@ -22,8 +22,8 @@ openssl x509 -req -in hornsup.csr -CA "$HOME/ssl/rootCA.pem" -CAkey "$HOME/ssl/r
 
 openssl pkcs12 -export -out hornsup.p12 -in hornsup.crt -inkey hornsup.key -name hornsup -password "pass:monday1"
 
-cp hornsup.p12 ~/projects/raspi-finance-endpoint/src/main/resources/hornsup-raspi-finance-keystore.p12
-cp hornsup.crt ~/projects/raspi-finance-react/ssl/hornsup-raspi-finance-cert.pem
-cp hornsup.key ~/projects/raspi-finance-react/ssl/hornsup-raspi-finance-key.pem
+cp hornsup.p12 ~/projects/github.com/BitExplorer/raspi-finance-endpoint/src/main/resources/hornsup-raspi-finance-keystore.p12
+cp hornsup.crt ~/projects/github.com/BitExplorer/raspi-finance-react/ssl/hornsup-raspi-finance-cert.pem
+cp hornsup.key ~/projects/github.com/BitExplorer/raspi-finance-react/ssl/hornsup-raspi-finance-key.pem
 
 exit 0
