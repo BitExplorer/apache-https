@@ -1,25 +1,29 @@
-#!/usr/bin/env bash
-if [ -z "$1" ]
-then
-    echo "Please supply a subdomain to create a certificate for";
-    echo "e.g. www.mysite.com"
-    exit;
+#!/usr/bin/env sh
+
+if [ ! -f "$HOME/ssl/rootCA.pem" ]; then
+  openssl genrsa -out rootCA.key 2048
+  openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 1024 -out rootCA.pem -subj "/C=US/ST=Texas/L=Denton/O=Brian LLC/OU=dev/CN=rootCA"
 fi
 
-if [ ! -f rootCA.pem ]; then
-    echo 'Please run "create_root_cert_and_key.sh" first, and try again!'
-    exit;
-fi
-if [ ! -f v3.ext ]; then
-    echo 'Please download the "v3.ext" file and try again!'
-    exit;
-fi
+cat > v3.ext << EOF
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
 
-DOMAIN=$1
-COMMON_NAME=$1
-SUBJECT="/C=SE/ST=None/L=NB/O=None/CN=$COMMON_NAME"
-NUM_OF_DAYS=999
-openssl req -new -newkey rsa:2048 -sha256 -nodes -keyout server.key -subj "$SUBJECT" -out server.csr
-cat v3.ext | sed s/%%DOMAIN%%/"$COMMON_NAME"/g > /tmp/__v3.ext
-cat secure.conf.template | sed s/%%DOMAIN%%/"$COMMON_NAME"/g > secure.conf
-openssl x509 -req -in server.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out server.crt -days $NUM_OF_DAYS -sha256 -extfile /tmp/__v3.ext
+[alt_names]
+DNS.1 = hornsup
+EOF
+
+COMMON_NAME=hornsup
+SUBJECT="/C=US/ST=Texas/L=Denton/O=Brian LLC/OU=None/CN=$COMMON_NAME"
+openssl req -new -newkey rsa:2048 -sha256 -nodes -keyout hornsup.key -subj "$SUBJECT" -out hornsup.csr
+openssl x509 -req -in hornsup.csr -CA "$HOME/ssl/rootCA.pem" -CAkey "$HOME/ssl/rootCA.key" -CAcreateserial -out hornsup.crt -days 365 -sha256 -extfile v3.ext
+
+openssl pkcs12 -export -out hornsup.p12 -in hornsup.crt -inkey hornsup.key -name hornsup -password "pass:monday1"
+
+cp hornsup.p12 ~/projects/raspi-finance-endpoint/src/main/resources/hornsup-raspi-finance-keystore.p12
+cp hornsup.crt ~/projects/raspi-finance-react/ssl/hornsup-raspi-finance-cert.pem
+cp hornsup.key ~/projects/raspi-finance-react/ssl/hornsup-raspi-finance-key.pem
+
+exit 0

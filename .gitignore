@@ -1,3 +1,4 @@
-etc/rootCA.*
-etc/server.*
-etc/secure.conf
+*.crt
+*.csr
+*.key
+*.p12
