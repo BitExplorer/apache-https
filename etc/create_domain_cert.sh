@@ -2,7 +2,7 @@
 
 if [ ! -f "$HOME/ssl/rootCA.pem" ]; then
   openssl genrsa -out "$HOME/ssl/rootCA.key" 2048
-  openssl req -x509 -new -nodes -key "$HOME/ssl/rootCA.key" -sha256 -days 1024 -out "$HOME/ssl/rootCA.pem" -subj "/C=US/ST=Texas/L=Denton/O=Brian LLC/OU=prod/CN=rootCA"
+  openssl req -x509 -new -nodes -key "$HOME/ssl/rootCA.key" -sha256 -days 1024 -out "$HOME/ssl/rootCA.pem" -subj "/C=US/ST=Texas/L=Denton/O=Brian LLC/OU=prod/CN=Brian LLC rootCA"
 fi
 
 cat > v3.ext << EOF
