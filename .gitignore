@@ -1,5 +1,6 @@
 *.crt
 *.csr
 *.key
+*.jks
 *.p12
 v3.ext

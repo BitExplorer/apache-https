@@ -23,6 +23,14 @@ openssl x509 -req -in hornsup.csr -CA "$HOME/ssl/rootCA.pem" -CAkey "$HOME/ssl/r
 
 openssl pkcs12 -export -out hornsup.p12 -in hornsup.crt -inkey hornsup.key -name hornsup -password "pass:monday1"
 
+
+# exporting to a der (cert)
+# keytool -export -alias "${SERVERNAME}-${APP}" -file "$HOME/ssl/${SERVERNAME}-${APP}.der" -keystore "$HOME/ssl/${SERVERNAME}-${APP}-keystore.jks" -keypass "${KEYSTORE_PASSWORD}" -storepass "${TRUSTSTORE_PASSWORD}"
+
+# exporting to a pem
+# keytool -export -rfc -alias hornsup -file hornsup.crt -keystore hornsup.jks -keypass monday1 -storepass monday1
+keytool -v -importkeystore -srckeystore hornsup.p12 -srcstoretype PKCS12 -destkeystore hornsup.jks -deststoretype JKS
+
 cp hornsup.p12 ~/projects/github.com/BitExplorer/raspi-finance-endpoint/src/main/resources/hornsup-raspi-finance-keystore.p12
 cp hornsup.crt ~/projects/github.com/BitExplorer/raspi-finance-react/ssl/hornsup-raspi-finance-cert.pem
 cp hornsup.key ~/projects/github.com/BitExplorer/raspi-finance-react/ssl/hornsup-raspi-finance-key.pem
