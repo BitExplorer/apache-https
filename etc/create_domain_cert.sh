@@ -29,10 +29,14 @@ openssl pkcs12 -export -out hornsup.p12 -in hornsup.crt -inkey hornsup.key -name
 
 # exporting to a pem
 # keytool -export -rfc -alias hornsup -file hornsup.crt -keystore hornsup.jks -keypass monday1 -storepass monday1
-keytool -v -importkeystore -srckeystore hornsup.p12 -srcstoretype PKCS12 -destkeystore hornsup.jks -deststoretype JKS
+rm -rf hornsup.jks
+keytool -importkeystore -srckeystore hornsup.p12 -srcstoretype PKCS12 -destkeystore hornsup.jks -deststoretype JKS -keypass monday1 -storepass monday1
+
+# keytool -importkeystore -srckeystore hornsup.jks -destkeystore hornsup.jks -deststoretype pkcs12 
 
 cp hornsup.p12 ~/projects/github.com/BitExplorer/raspi-finance-endpoint/src/main/resources/hornsup-raspi-finance-keystore.p12
 cp hornsup.crt ~/projects/github.com/BitExplorer/raspi-finance-react/ssl/hornsup-raspi-finance-cert.pem
 cp hornsup.key ~/projects/github.com/BitExplorer/raspi-finance-react/ssl/hornsup-raspi-finance-key.pem
+cp hornsup.jks ~/projects/github.com/BitExplorer/raspi-finance-ratpack/src/ratpack/hornsup-raspi-finance.jks
 
 exit 0
